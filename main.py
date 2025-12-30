@@ -12,7 +12,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 # ---------------- CONFIG ------------------
 
-LAUNCHER_VERSION = "1.0.0"
+LAUNCHER_VERSION = "2.0.0"
 
 BUILD_URL_WIN_PART1 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte1.zip"
 BUILD_URL_WIN_PART2 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte2.zip"
