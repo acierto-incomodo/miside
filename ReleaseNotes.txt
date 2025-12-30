@@ -1,7 +1,7 @@
 Cambios
 
-Launcher (v1.0.0):
-- NaN
+Launcher (v2.0.0):
+- Descargas multiples
 
-Juego (v1.0.0):
-- NaN
+Juego (v2.0.0):
+- Actualizado
