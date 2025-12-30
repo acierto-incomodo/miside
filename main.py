@@ -14,7 +14,9 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 LAUNCHER_VERSION = "1.0.0"
 
-BUILD_URL_WIN = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip"
+BUILD_URL_WIN_PART1 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte1.zip"
+BUILD_URL_WIN_PART2 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte2.zip"
+BUILD_URL_WIN_PART3 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte3.zip"
 BUILD_URL_LINUX = "https://github.com/acierto-incomodo/miside/releases/latest/download/BuildLinux.zip"
 VERSION_URL = "https://github.com/acierto-incomodo/miside/releases/latest/download/Version.txt"
 RELEASE_NOTES_URL = "https://github.com/acierto-incomodo/miside/releases/latest/download/ReleaseNotes.txt"
@@ -52,8 +54,8 @@ def download_file(url: str, dest: Path, progress_callback=None, chunk_size=8192)
     return dest
 
 
-def extract_zip(zip_path: Path, to_dir: Path):
-    if to_dir.exists():
+def extract_zip(zip_path: Path, to_dir: Path, clear_dest=True):
+    if clear_dest and to_dir.exists():
         shutil.rmtree(to_dir)
     to_dir.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "r") as z:
@@ -278,15 +280,6 @@ class LauncherWindow(QtWidgets.QWidget):
 
     def _update_thread(self):
         try:
-            if sys.platform.startswith("win"):
-                build_url = BUILD_URL_WIN
-                zip_name = "Build.zip"
-            else:
-                build_url = BUILD_URL_LINUX
-                zip_name = "BuildLinux.zip"
-
-            zip_path = DOWNLOAD_DIR / zip_name
-
             def progress_cb(downloaded, total):
                 percent = int(downloaded * 100 / total) if total else 0
                 QtCore.QMetaObject.invokeMethod(
@@ -295,10 +288,34 @@ class LauncherWindow(QtWidgets.QWidget):
                     QtCore.Q_ARG(int, percent)
                 )
 
-            download_file(build_url, zip_path, progress_cb)
+            if sys.platform.startswith("win"):
+                # Parte 1
+                self.set_status("Descargando Parte 1...")
+                zip_path1 = DOWNLOAD_DIR / "Parte1.zip"
+                download_file(BUILD_URL_WIN_PART1, zip_path1, progress_cb)
+                self.set_status("Extrayendo Parte 1...")
+                extract_zip(zip_path1, BUILD_DIR, clear_dest=True)
 
-            self.set_status("Extrayendo archivos...")
-            extract_zip(zip_path, BUILD_DIR)
+                # Parte 2
+                self.set_status("Descargando Parte 2...")
+                zip_path2 = DOWNLOAD_DIR / "Parte2.zip"
+                download_file(BUILD_URL_WIN_PART2, zip_path2, progress_cb)
+                self.set_status("Extrayendo Parte 2...")
+                extract_zip(zip_path2, BUILD_DIR, clear_dest=False)
+
+                # Parte 3
+                self.set_status("Descargando Parte 3...")
+                zip_path3 = DOWNLOAD_DIR / "Parte3.zip"
+                download_file(BUILD_URL_WIN_PART3, zip_path3, progress_cb)
+                self.set_status("Extrayendo Parte 3...")
+                extract_zip(zip_path3, BUILD_DIR, clear_dest=False)
+
+            else:
+                zip_path = DOWNLOAD_DIR / "BuildLinux.zip"
+                self.set_status("Descargando versión...")
+                download_file(BUILD_URL_LINUX, zip_path, progress_cb)
+                self.set_status("Extrayendo archivos...")
+                extract_zip(zip_path, BUILD_DIR, clear_dest=True)
 
             self.set_status("Descargando Version.txt...")
             version = requests.get(VERSION_URL, timeout=30).text.strip()
