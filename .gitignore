@@ -2,3 +2,6 @@
 /dist
 /output
 /venv
+/downloads
+/game
+*.spec
