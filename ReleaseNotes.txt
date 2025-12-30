@@ -1,7 +1,8 @@
 Cambios
 
-Launcher (v2.0.0):
+Launcher (v2.1.0):
 - Descargas multiples
+- Arreglos tecnicos
 
-Juego (v2.0.0):
+Juego (v2.1.0):
 - Actualizado
