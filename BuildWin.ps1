@@ -2,4 +2,4 @@
 cp main.py launcher_win.py
 python -m PyInstaller --onefile --windowed --noconsole --icon=icono.ico launcher_win.py
 python -m PyInstaller --onefile --windowed --noconsole --icon=icono.ico installer_updater.py
-echo 2.1.0 > version_win_launcher.txt
+echo 2.2.0 > version_win_launcher.txt

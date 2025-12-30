@@ -12,17 +12,18 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 # ---------------- CONFIG ------------------
 
-LAUNCHER_VERSION = "2.1.0"
+LAUNCHER_VERSION = "2.2.0"
 
-BUILD_URL_WIN_PART1 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte1.zip"
-BUILD_URL_WIN_PART2 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte2.zip"
-BUILD_URL_WIN_PART3 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Parte3.zip"
-BUILD_URL_LINUX = "https://github.com/acierto-incomodo/miside/releases/latest/download/BuildLinux.zip"
+BUILD_URL_PART1 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip.001"
+BUILD_URL_PART2 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip.002"
+BUILD_URL_PART3 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip.003"
+BUILD_URL_PART4 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip.004"
+BUILD_URL_PART5 = "https://github.com/acierto-incomodo/miside/releases/latest/download/Build.zip.005"
 VERSION_URL = "https://github.com/acierto-incomodo/miside/releases/latest/download/Version.txt"
 RELEASE_NOTES_URL = "https://github.com/acierto-incomodo/miside/releases/latest/download/ReleaseNotes.txt"
 
 EXE_NAME_WIN   = "Build/MiSideFull.exe"
-EXE_NAME_LINUX = "NoLinux"
+EXE_NAME_LINUX = "Build/MiSideFull.exe"
 
 DOWNLOAD_DIR = Path.cwd() / "downloads"
 GAME_DIR     = Path.cwd() / "game"
@@ -60,6 +61,10 @@ def extract_zip(zip_path: Path, to_dir: Path, clear_dest=True):
     to_dir.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall(path=to_dir)
+
+    # Usar 7z para descomprimir
+    cmd = ["7z", "x", str(zip_path), f"-o{to_dir}", "-y"]
+    subprocess.run(cmd, check=True)
 
 
 def start_game_process():
@@ -288,34 +293,34 @@ class LauncherWindow(QtWidgets.QWidget):
                     QtCore.Q_ARG(int, percent)
                 )
 
-            if sys.platform.startswith("win"):
-                # Parte 1
-                self.set_status("Descargando Parte 1...")
-                zip_path1 = DOWNLOAD_DIR / "Parte1.zip"
-                download_file(BUILD_URL_WIN_PART1, zip_path1, progress_cb)
-                self.set_status("Extrayendo Parte 1...")
-                extract_zip(zip_path1, BUILD_DIR, clear_dest=True)
+            # Parte 1
+            self.set_status("Descargando Parte 1...")
+            zip_path1 = DOWNLOAD_DIR / "Build.zip.001"
+            download_file(BUILD_URL_PART1, zip_path1, progress_cb)
 
-                # Parte 2
-                self.set_status("Descargando Parte 2...")
-                zip_path2 = DOWNLOAD_DIR / "Parte2.zip"
-                download_file(BUILD_URL_WIN_PART2, zip_path2, progress_cb)
-                self.set_status("Extrayendo Parte 2...")
-                extract_zip(zip_path2, BUILD_DIR, clear_dest=False)
+            # Parte 2
+            self.set_status("Descargando Parte 2...")
+            zip_path2 = DOWNLOAD_DIR / "Build.zip.002"
+            download_file(BUILD_URL_PART2, zip_path2, progress_cb)
 
-                # Parte 3
-                self.set_status("Descargando Parte 3...")
-                zip_path3 = DOWNLOAD_DIR / "Parte3.zip"
-                download_file(BUILD_URL_WIN_PART3, zip_path3, progress_cb)
-                self.set_status("Extrayendo Parte 3...")
-                extract_zip(zip_path3, BUILD_DIR, clear_dest=False)
+            # Parte 3
+            self.set_status("Descargando Parte 3...")
+            zip_path3 = DOWNLOAD_DIR / "Build.zip.003"
+            download_file(BUILD_URL_PART3, zip_path3, progress_cb)
 
-            else:
-                zip_path = DOWNLOAD_DIR / "BuildLinux.zip"
-                self.set_status("Descargando versión...")
-                download_file(BUILD_URL_LINUX, zip_path, progress_cb)
-                self.set_status("Extrayendo archivos...")
-                extract_zip(zip_path, BUILD_DIR, clear_dest=True)
+            # Parte 4
+            self.set_status("Descargando Parte 4...")
+            zip_path4 = DOWNLOAD_DIR / "Build.zip.004"
+            download_file(BUILD_URL_PART4, zip_path4, progress_cb)
+
+            # Parte 5
+            self.set_status("Descargando Parte 5...")
+            zip_path5 = DOWNLOAD_DIR / "Build.zip.005"
+            download_file(BUILD_URL_PART5, zip_path5, progress_cb)
+
+            self.set_status("Extrayendo archivos...")
+            extract_zip(zip_path1, BUILD_DIR, clear_dest=True)
+
 
             self.set_status("Descargando Version.txt...")
             version = requests.get(VERSION_URL, timeout=30).text.strip()

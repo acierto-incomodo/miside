@@ -1,0 +1,5 @@
+comprimir en zip (genera el zip y varios archivos mas):
+zip -r -s 1900m Build.zip Build/
+
+descomprimir en zip (hace falta el zip y los otros archivos):
+unzip Build.zip
